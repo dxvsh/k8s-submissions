@@ -4,4 +4,4 @@ Steps to run:
 
 2. Import the image into k3d (or push to dockerhub): `k3d image import logoutput:1.1 -c <CLUSTER-NAME>`
 
-3. Create Deployment: `kubectl create deployment logoutput --image=logoutput:1.1`
+3. Create Deployment: `kubectl apply -f manifests/deployment.yaml`
