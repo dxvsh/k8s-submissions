@@ -4,4 +4,4 @@ Steps to run:
 
 2. Import the image into k3d (or push to dockerhub): `k3d image import the_project:1.1 -c <CLUSTER-NAME>`
 
-3. Create Deployment: `kubectl create deployment theproject --image=the_project:1.1`
+3. Create Deployment: `kubectl apply -f manifests/deployment.yaml`
