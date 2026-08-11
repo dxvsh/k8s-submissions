@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -14,7 +13,18 @@ func main() {
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Server started in port %s", port)
+		if r.URL.Path != "/" {
+			http.NotFound(w, r)
+			return
+		}
+
+		if r.Method != http.MethodGet {
+			w.Header().Set("Allow", http.MethodGet)
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		http.ServeFile(w, r, "index.html")
 	})
 
 	log.Printf("Server started in port %s", port)

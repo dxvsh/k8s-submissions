@@ -1,17 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: todo-app
+  name: project-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: todo-app
+      app: project-app
   template:
     metadata:
       labels:
-        app: todo-app
+        app: project-app
     spec:
       containers:
-        - name: todo-app
-          image: the_project:1.1
+        - name: project-app
+          image: the_project:1.5
+          env:
+            - name: PORT
+              value: "9090"
