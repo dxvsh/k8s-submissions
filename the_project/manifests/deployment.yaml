@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: project-app
-          image: the_project:1.5
+          image: the_project:1.8
           env:
             - name: PORT
               value: "9090"
