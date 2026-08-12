@@ -1,28 +1,33 @@
-import logging
-import sys
-import time
+import json
+import os
 import uuid
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-logger.propagate = False
-
-handler = logging.StreamHandler(sys.stdout)
-handler.setFormatter(
-    logging.Formatter(
-        "%(asctime)s: %(message)s"
-    )
-)
-logger.addHandler(handler)
+from datetime import datetime, timezone
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 UUID_STRING = str(uuid.uuid4())
-INTERVAL = 5
+HOST = "0.0.0.0"
+PORT = int(os.environ.get("PORT", "9090"))
 
-def log_outputs():
-    while True:
-        logger.info(UUID_STRING)
-        time.sleep(INTERVAL)
+
+class StatusHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        if self.path != "/status":
+            self.send_error(404)
+            return
+
+        response = {
+            "uuid": UUID_STRING,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+        body = json.dumps(response).encode("utf-8")
+
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
 
 
 if __name__ == "__main__":
-    log_outputs()
+    server = ThreadingHTTPServer((HOST, PORT), StatusHandler)
+    server.serve_forever()

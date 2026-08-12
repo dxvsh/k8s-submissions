@@ -1,7 +1,7 @@
-FROM python:3.14-alpine
+FROM gcr.io/distroless/python3:nonroot
 
 WORKDIR /usr/src/app
 
 COPY . .
 
-CMD ["python", "log_output.py"]
+CMD ["log_output.py"]
