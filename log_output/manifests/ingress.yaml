@@ -6,10 +6,17 @@ spec:
   rules:
   - http:
       paths:
-      - path: /
+      - path: /status
         pathType: Prefix
         backend:
           service:
             name: hashgenerator-svc
             port:
               number: 2345
+      - path: /pingpong
+        pathType: Prefix
+        backend:
+          service:
+            name: pingpong-svc
+            port:
+              number: 4567
