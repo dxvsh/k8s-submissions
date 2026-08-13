@@ -12,6 +12,17 @@ spec:
       labels:
         app: hashgenerator
     spec:
+      volumes:
+        - name: shared-logs
+          emptyDir: {}
       containers:
-        - name: hashgenerator
-          image: log_output:1.7
+        - name: logs-generator
+          image: logs_generator:1.10
+          volumeMounts:
+            - name: shared-logs
+              mountPath: /usr/src/app/logs
+        - name: logs-reader
+          image: logs_reader:1.10
+          volumeMounts:
+            - name: shared-logs
+              mountPath: /usr/src/app/logs
