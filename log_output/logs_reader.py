@@ -4,6 +4,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse
 
 LOG_FILE = "logs/logs.txt"
+PINGS_FILE = "logs/pings.txt"
 HOST = "0.0.0.0"
 PORT = int(os.environ.get("PORT", "9090"))
 
@@ -21,6 +22,11 @@ def read_latest_log_entry():
         return None
 
     return json.loads(latest_line)
+
+
+def read_ping_count():
+    with open(PINGS_FILE, "r", encoding="utf-8") as pings_file:
+        return int(pings_file.read().strip())
 
 
 class StatusHandler(BaseHTTPRequestHandler):
@@ -48,6 +54,21 @@ class StatusHandler(BaseHTTPRequestHandler):
             self.send_json_response(
                 503,
                 {"error": "logs.txt does not contain any log entries yet"},
+            )
+            return
+
+        try:
+            response["Ping / Pongs"] = read_ping_count()
+        except FileNotFoundError:
+            self.send_json_response(
+                503,
+                {"error": "pings.txt does not exist yet"},
+            )
+            return
+        except ValueError:
+            self.send_json_response(
+                500,
+                {"error": "pings.txt does not contain a valid number"},
             )
             return
 

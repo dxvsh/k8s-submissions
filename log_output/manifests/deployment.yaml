@@ -14,15 +14,16 @@ spec:
     spec:
       volumes:
         - name: shared-logs
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: pingpong-claim
       containers:
         - name: logs-generator
-          image: logs_generator:1.10
+          image: logs_generator:1.11
           volumeMounts:
             - name: shared-logs
               mountPath: /usr/src/app/logs
         - name: logs-reader
-          image: logs_reader:1.10
+          image: logs_reader:1.11
           volumeMounts:
             - name: shared-logs
               mountPath: /usr/src/app/logs
