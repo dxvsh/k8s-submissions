@@ -12,9 +12,16 @@ spec:
       labels:
         app: project-app
     spec:
+      volumes:
+        - name: image-cache
+          persistentVolumeClaim:
+            claimName: pingpong-claim
       containers:
         - name: project-app
-          image: the_project:1.8
+          image: the_project:1.12
           env:
             - name: PORT
               value: "9090"
+          volumeMounts:
+            - name: image-cache
+              mountPath: /usr/src/app/cache
