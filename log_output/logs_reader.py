@@ -1,10 +1,15 @@
 import json
 import os
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
+from urllib.request import urlopen
 
 LOG_FILE = "logs/logs.txt"
-PINGS_FILE = "logs/pings.txt"
+PINGPONG_SVC_NAME = os.environ.get("PINGPONG_SVC_NAME", "pingpong-svc")
+PINGPONG_SVC_PORT = os.environ.get("PINGPONG_SVC_PORT", "4567")
+PINGS_URL = f"http://{PINGPONG_SVC_NAME}:{PINGPONG_SVC_PORT}/pings"
+PINGPONG_REQUEST_TIMEOUT_SECONDS = 5
 HOST = "0.0.0.0"
 PORT = int(os.environ.get("PORT", "9090"))
 
@@ -25,8 +30,9 @@ def read_latest_log_entry():
 
 
 def read_ping_count():
-    with open(PINGS_FILE, "r", encoding="utf-8") as pings_file:
-        return int(pings_file.read().strip())
+    with urlopen(PINGS_URL, timeout=PINGPONG_REQUEST_TIMEOUT_SECONDS) as response:
+        ping_response = json.loads(response.read().decode("utf-8"))
+        return int(ping_response["ping_count"])
 
 
 class StatusHandler(BaseHTTPRequestHandler):
@@ -59,16 +65,22 @@ class StatusHandler(BaseHTTPRequestHandler):
 
         try:
             response["Ping / Pongs"] = read_ping_count()
-        except FileNotFoundError:
+        except HTTPError as error:
             self.send_json_response(
-                503,
-                {"error": "pings.txt does not exist yet"},
+                502,
+                {"error": f"ping service returned HTTP {error.code}"},
             )
             return
-        except ValueError:
+        except URLError:
+            self.send_json_response(
+                502,
+                {"error": "could not reach ping service"},
+            )
+            return
+        except (KeyError, json.JSONDecodeError, ValueError):
             self.send_json_response(
                 500,
-                {"error": "pings.txt does not contain a valid number"},
+                {"error": "ping service did not return a valid ping_count"},
             )
             return
 

@@ -20,3 +20,10 @@ spec:
             name: pingpong-svc
             port:
               number: 4567
+      - path: /pings
+        pathType: Prefix
+        backend:
+          service:
+            name: pingpong-svc
+            port:
+              number: 4567

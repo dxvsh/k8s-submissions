@@ -18,7 +18,7 @@ spec:
             claimName: pingpong-claim
       containers:
         - name: pingpong
-          image: ping_pong:1.11
+          image: ping_pong:2.1
           volumeMounts:
             - name: pingpong-vol
               mountPath: /usr/src/app/logs

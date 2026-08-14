@@ -35,8 +35,19 @@ func pingPongHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "pong %d", count)
 }
 
+func pingsHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Fprintf(w, `{"ping_count": %d}`, counter.Load())
+}
+
 func main() {
 	http.HandleFunc("/pingpong", pingPongHandler)
+	http.HandleFunc("/pings", pingsHandler)
 
 	log.Println("listening on :3000")
 	log.Fatal(http.ListenAndServe(":3000", nil))
