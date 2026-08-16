@@ -17,8 +17,9 @@ const (
 )
 
 var (
-	imageCacheMu sync.Mutex
-	httpClient   = &http.Client{Timeout: 15 * time.Second}
+	imageCacheMu  sync.Mutex
+	httpClient    = &http.Client{Timeout: 15 * time.Second}
+	requestLogger = log.New(os.Stdout, "", 0)
 )
 
 func main() {
@@ -28,12 +29,50 @@ func main() {
 	}
 
 	http.HandleFunc("/", handleHome)
+	http.HandleFunc("/styles.css", handleStaticFile("styles.css"))
+	http.HandleFunc("/app.js", handleStaticFile("app.js"))
 	http.HandleFunc("/image", handleImage)
 
 	log.Printf("Server started in port %s", port)
-	if err := http.ListenAndServe(":"+port, nil); err != nil {
+	if err := http.ListenAndServe(":"+port, logRequests(http.DefaultServeMux)); err != nil {
 		log.Fatalf("Server failed: %v", err)
 	}
+}
+
+type responseRecorder struct {
+	http.ResponseWriter
+	status int
+}
+
+func (r *responseRecorder) WriteHeader(status int) {
+	r.status = status
+	r.ResponseWriter.WriteHeader(status)
+}
+
+func (r *responseRecorder) Write(body []byte) (int, error) {
+	if r.status == 0 {
+		r.status = http.StatusOK
+	}
+	return r.ResponseWriter.Write(body)
+}
+
+func logRequests(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		recorder := &responseRecorder{ResponseWriter: w}
+
+		next.ServeHTTP(recorder, r)
+
+		status := recorder.status
+		if status == 0 {
+			status = http.StatusOK
+		}
+		requestLogger.Printf(
+			"[%s] %q %d",
+			time.Now().Format(time.DateTime),
+			r.Method+" "+r.URL.RequestURI(),
+			status,
+		)
+	})
 }
 
 func handleHome(w http.ResponseWriter, r *http.Request) {
@@ -49,6 +88,18 @@ func handleHome(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.ServeFile(w, r, "index.html")
+}
+
+func handleStaticFile(filePath string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			w.Header().Set("Allow", http.MethodGet)
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		http.ServeFile(w, r, filePath)
+	}
 }
 
 func handleImage(w http.ResponseWriter, r *http.Request) {

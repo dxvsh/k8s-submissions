@@ -4,122 +4,8 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Todo App</title>
-	<style>
-		* {
-			box-sizing: border-box;
-		}
-
-		body {
-			margin: 0;
-			font-family: Arial, sans-serif;
-			background: #ffffff;
-			color: #2d2d2d;
-		}
-
-		main {
-			max-width: 1200px;
-			margin: 56px auto;
-			padding: 0 20px;
-			text-align: center;
-		}
-
-		h1 {
-			margin: 0 0 36px;
-			font-size: 3rem;
-			font-weight: 700;
-		}
-
-		.hero-image {
-			width: 300px;
-			height: 300px;
-			border-radius: 12px;
-			box-shadow: 0 10px 22px rgba(15, 23, 42, 0.18);
-			object-fit: cover;
-		}
-
-		.todo-form {
-			display: flex;
-			justify-content: center;
-			gap: 16px;
-			margin: 80px auto 48px;
-			max-width: 760px;
-		}
-
-		.todo-input {
-			flex: 1;
-			min-width: 0;
-			padding: 18px 20px;
-			font-size: 1.35rem;
-			border: 3px solid #4caf50;
-			border-radius: 6px;
-			outline: none;
-		}
-
-		.todo-input:focus {
-			box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.14);
-		}
-
-		.send-button {
-			padding: 0 32px;
-			font-size: 1.35rem;
-			font-weight: 700;
-			color: #ffffff;
-			background: #4caf50;
-			border: none;
-			border-radius: 6px;
-			cursor: pointer;
-		}
-
-		.send-button:hover {
-			background: #43a047;
-		}
-
-		h2 {
-			margin: 0 0 30px;
-			font-size: 2.25rem;
-		}
-
-		.todo-list {
-			list-style: none;
-			margin: 0;
-			padding: 0;
-			text-align: left;
-		}
-
-		.todo-item {
-			margin-bottom: 16px;
-			padding: 24px 28px;
-			font-size: 1.35rem;
-			background: #ffffff;
-			border-left: 6px solid #4caf50;
-			border-radius: 6px;
-			box-shadow: 0 3px 12px rgba(15, 23, 42, 0.12);
-		}
-
-		@media (max-width: 640px) {
-			main {
-				margin-top: 32px;
-			}
-
-			h1 {
-				font-size: 2.4rem;
-			}
-
-			.hero-image {
-				width: 240px;
-				height: 240px;
-			}
-
-			.todo-form {
-				flex-direction: column;
-				margin-top: 48px;
-			}
-
-			.send-button {
-				padding: 16px 32px;
-			}
-		}
-	</style>
+	<link rel="stylesheet" href="/styles.css">
+	<script src="/app.js" defer></script>
 </head>
 <body>
 	<main>
@@ -127,25 +13,24 @@
 
 		<img class="hero-image" src="/image" alt="Random image from Lorem Picsum">
 
-		<form class="todo-form">
+		<form class="todo-form" id="todo-form">
 			<input
 				class="todo-input"
+				id="todo-input"
 				type="text"
 				name="todo"
 				maxlength="140"
 				placeholder="Enter a new todo (max 140 characters)"
 				aria-label="New todo"
+				required
 			>
-			<button class="send-button" type="button">Send</button>
+			<button class="send-button" id="send-button" type="submit">Send</button>
 		</form>
 
-		<h2>Todos</h2>
+		<p class="form-error" id="form-error" role="alert" aria-live="polite"></p>
 
-		<ul class="todo-list">
-			<li class="todo-item">Learn Kubernetes basics</li>
-			<li class="todo-item">Deploy application to cluster</li>
-			<li class="todo-item">Configure persistent volumes</li>
-		</ul>
+		<h2>Todos</h2>
+		<ul class="todo-list" id="todo-list"></ul>
 	</main>
 </body>
 </html>

@@ -18,7 +18,7 @@ spec:
             claimName: pingpong-claim
       containers:
         - name: project-app
-          image: the_project:1.13
+          image: the_project:2.2
           env:
             - name: PORT
               value: "9090"
