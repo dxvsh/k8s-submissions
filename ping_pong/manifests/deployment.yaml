@@ -1,6 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: exercises
   name: pingpong
 spec:
   replicas: 1
@@ -15,7 +16,7 @@ spec:
       volumes:
         - name: pingpong-vol
           persistentVolumeClaim:
-            claimName: pingpong-claim
+            claimName: exercises-claim
       containers:
         - name: pingpong
           image: ping_pong:2.1

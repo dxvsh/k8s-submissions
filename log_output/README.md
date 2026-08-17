@@ -1,18 +1,18 @@
 Steps to run:
 
 1. Create the persistent volume and a correspoding claim to it:
-  - `kubectl apply -f ../persistent-volume-definitions/persistentvolume.yaml`
-  - `kubectl apply -f ../persistent-volume-definitions/persistentvolumeclaim.yaml`
+  - `kubectl apply -f ../persistent-volume-definitions/exercises-pv.yaml`
+  - `kubectl apply -f ../persistent-volume-definitions/exercises-pvc.yaml`
 
 2. Build and start the ping-pong application container (instructions in `../ping_pong/README.md`)
 
 3. Build the container images for the two applications - logs generator and logs reader: 
-  - `docker build . -t logs_generator:2.1 -f generator.Dockerfile`
-  - `docker build . -t logs_reader:2.1 -f reader.Dockerfile`
+  - `docker build . -t logs_generator:2.3 -f generator.Dockerfile`
+  - `docker build . -t logs_reader:2.3 -f reader.Dockerfile`
 
 4. Import the images into k3d (or push to dockerhub): 
-  - `k3d image import logs_generator:2.1 -c <CLUSTER-NAME>`
-  - `k3d image import logs_reader:2.1 -c <CLUSTER-NAME>`
+  - `k3d image import logs_generator:2.3 -c <CLUSTER-NAME>`
+  - `k3d image import logs_reader:2.3 -c <CLUSTER-NAME>`
 
 5. Create the Deployment, Service and Ingress resources: `kubectl apply -f manifests/`
 

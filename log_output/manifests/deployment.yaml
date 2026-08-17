@@ -1,6 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: exercises
   name: hashgenerator-dep
 spec:
   replicas: 1
@@ -15,7 +16,7 @@ spec:
       volumes:
         - name: shared-logs
           persistentVolumeClaim:
-            claimName: pingpong-claim
+            claimName: exercises-claim
       containers:
         - name: logs-generator
           image: logs_generator:2.1
