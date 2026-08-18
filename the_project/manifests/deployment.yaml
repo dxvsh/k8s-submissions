@@ -15,10 +15,10 @@ spec:
       volumes:
         - name: image-cache
           persistentVolumeClaim:
-            claimName: pingpong-claim
+            claimName: project-claim
       containers:
         - name: project-app
-          image: the_project:2.2
+          image: the_project:2.4
           env:
             - name: PORT
               value: "9090"

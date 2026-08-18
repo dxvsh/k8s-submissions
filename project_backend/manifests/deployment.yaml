@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: project-backend
-          image: project_backend:2.2
+          image: project_backend:2.4
           env:
             - name: PORT
               value: "4040"
