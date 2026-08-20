@@ -5,6 +5,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import urlopen
 
+INFORMATION_FILE = "/usr/src/app/config/information.txt"
 LOG_FILE = "logs/logs.txt"
 PINGPONG_SVC_NAME = os.environ.get("PINGPONG_SVC_NAME", "pingpong-svc")
 PINGPONG_SVC_PORT = os.environ.get("PINGPONG_SVC_PORT", "4567")
@@ -83,6 +84,12 @@ class StatusHandler(BaseHTTPRequestHandler):
                 {"error": "ping service did not return a valid ping_count"},
             )
             return
+
+        with open(INFORMATION_FILE, "r", encoding="utf-8") as info_file:
+            info_text = info_file.readline().strip()
+
+        response["file content"] = info_text
+        response["env variable: MESSAGE"] = os.getenv("MESSAGE")
 
         self.send_json_response(200, response)
 

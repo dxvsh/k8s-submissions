@@ -17,19 +17,33 @@ spec:
         - name: shared-logs
           persistentVolumeClaim:
             claimName: exercises-claim
+        - name: configmap-vol
+          configMap:
+            name: logoutput-cm
+            items:
+              - key: "information.txt"
+                path: "information.txt"
       containers:
         - name: logs-generator
-          image: logs_generator:2.1
+          image: logs_generator:2.5
           volumeMounts:
             - name: shared-logs
               mountPath: /usr/src/app/logs
         - name: logs-reader
-          image: logs_reader:2.1
+          image: logs_reader:2.5
           volumeMounts:
             - name: shared-logs
               mountPath: /usr/src/app/logs
+            - name: configmap-vol
+              mountPath: /usr/src/app/config
+              readOnly: true
           env:
             - name: PINGPONG_SVC_NAME
               value: "pingpong-svc"
             - name: PINGPONG_SVC_PORT
               value: "4567"
+            - name: MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: logoutput-cm
+                  key: message
