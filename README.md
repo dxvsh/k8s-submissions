@@ -25,3 +25,4 @@ This repository contains submissions for [Devops with Kubernetes Course](https:/
 - [2.3](https://github.com/dxvsh/k8s-submissions/tree/2.3)
 - [2.4](https://github.com/dxvsh/k8s-submissions/tree/2.4/the_project)
 - [2.5](https://github.com/dxvsh/k8s-submissions/tree/2.5/log_output)
+- [2.6](https://github.com/dxvsh/k8s-submissions/tree/2.6/the_project)
