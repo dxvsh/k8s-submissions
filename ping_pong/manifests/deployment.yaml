@@ -19,7 +19,23 @@ spec:
             claimName: exercises-claim
       containers:
         - name: pingpong
-          image: ping_pong:2.1
+          image: ping_pong:2.7
+          env:
+            - name: POSTGRES_HOST
+              value: pingpong-postgres-svc
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                 secretKeyRef:
+                   name: postgres-credentials
+                   key: password
+            - name: POSTGRES_DB
+              value: postgres
+            - name: POSTGRES_SSLMODE
+              value: disable
           volumeMounts:
             - name: pingpong-vol
               mountPath: /usr/src/app/logs
