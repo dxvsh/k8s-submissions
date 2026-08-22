@@ -1,6 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: project
   name: project-backend
 spec:
   replicas: 1
@@ -14,7 +15,22 @@ spec:
     spec:
       containers:
         - name: project-backend
-          image: project_backend:2.4
+          image: project_backend:2.8
           env:
             - name: PORT
               value: "4040"
+            - name: POSTGRES_HOST
+              value: todoapp-postgres-svc
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                 secretKeyRef:
+                   name: postgres-credentials
+                   key: password
+            - name: POSTGRES_DB
+              value: postgres
+            - name: POSTGRES_SSLMODE
+              value: disable
